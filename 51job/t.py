@@ -1,3 +1,12 @@
+"""
+    1.浏览器启动快捷方式后面添加后面的参数然后重启浏览器 --remote-debugging-port=9222
+    2.下载浏览器驱动 对应地址 http://chromedriver.storage.googleapis.com/index.html
+    3.配置驱动到path,如果不配用注释哪行代码指向驱动位置也行
+    4.安装python3 以及相关依赖 （如果有忽略他）    
+"""
+
+
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
@@ -31,8 +40,6 @@ def parse_page(html):
             }
             yield rs
 
-
-
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_experimental_option("debuggerAddress","127.0.0.1:9222")
 browser=webdriver.Chrome(chrome_options=chrome_options)
@@ -43,7 +50,7 @@ browser.get('https://search.51job.com/')
 searchK_key=browser.find_element_by_xpath('//*[@id="kwdselectid"]')
 searchK_key.clear()
 searchK_key.send_keys('python')
-ActionChains(browser).move_by_offset(200, 100).click().perform()
+ActionChains(browser).move_by_offset(0, 0).click().perform()
 
 
 address=browser.find_element_by_xpath('//*[@id="work_position_input"]')
