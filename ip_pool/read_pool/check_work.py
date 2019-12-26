@@ -1,3 +1,9 @@
 from threading import Thread
-from common.ip_lib import IpLib
 
+def check(ip_lib):
+    lib.check_and_get()
+
+
+def run(ip_lib):
+    thread_01 = Thread(target=check)
+    thread_01.start()

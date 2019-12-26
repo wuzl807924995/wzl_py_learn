@@ -19,17 +19,20 @@ import sys
 c=Crawler()
 lib=IpLib()
 
-l=list(c.crawl_daili66(1))
-for x in l:
-    lib.save_ip_port(x)
+l=list(c.crawl_data5u_2())
 
-c=lib.ip_count()
+print(l)
 
-for x in range(0,c*c):
-    # c=lib.random()
-    c=lib.check_and_get()
-    print(c)
-    if c:
-        if isinstance(c, bytes):
-            c = c.decode('utf-8')
-        print('yes:'+c)
+# for x in l:
+#     lib.save_ip_port(x)
+
+# c=lib.ip_count()
+
+# for x in range(0,c*c):
+#     # c=lib.random()
+#     c=lib.check_and_get()
+#     print(c)
+#     if c:
+#         if isinstance(c, bytes):
+#             c = c.decode('utf-8')
+#         print('yes:'+c)
