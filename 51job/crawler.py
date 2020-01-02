@@ -10,6 +10,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 from pyquery import PyQuery as pq
 import time
@@ -40,7 +41,7 @@ class crawler_51_job(object):
             db[MONGO_COLLECTION].insert(x)
 
 
-    def parse_page(self,html):
+    def parse_page(self,browser,html):
         doc = pq(html)
         rs_list = doc('#resultList div.el').items()
         for i in rs_list:
@@ -68,6 +69,9 @@ class crawler_51_job(object):
                 idx_end=company_href.rfind('.html')
                 if idx_start!=-1 and idx_end !=-1:
                         rs['company_id']=company_href[idx_start+1:idx_end]
+
+                # rs['job_detail']=self.run_job_page(browser,rs['job_href'])
+
                 yield rs
 
     def open_browser(self):
@@ -131,6 +135,40 @@ class crawler_51_job(object):
             address_save=browser.find_element_by_xpath('//*[@id="work_position_click_bottom_save"]')
             address_save.click()
 
+
+    def run_job_page(self,browser,link):
+        """
+            新窗口打开页面并爬数据
+        """    
+        mainWindow = browser.current_window_handle 
+        handles = browser.window_handles
+        for h in handles:
+            if h != mainWindow:
+                browser.switch_to.window(h)
+
+
+        toHandle  = browser.current_window_handle
+        self.sl()
+
+        html = browser.page_source
+        doc = pq(html)
+        th_job=doc('div.tHjob')
+
+        page_cn=th_job.children('.in').children('.cn')
+
+        ltype_title=page_cn.children('p.ltype').attr('title')
+        msg=ltype_title.replace('\xa0','').replace(' ','').split('|')
+
+        rs={
+            'title':page_cn.children('h1').attr('title'),
+            'money':page_cn.children('strong').text(),
+            'address':msg[0],
+            'expe':msg[1],
+            'schooling':msg[2],
+            'num':msg[3].replace('招','').replace('人',''),
+        }
+        return rs
+
     def run(self):
         browser=self.open_browser()
         browser.get(BASE_URL)
@@ -158,7 +196,7 @@ class crawler_51_job(object):
         total_page = doc('#hidTotalPage').attr('value')
         # test
         total_page=int(total_page)
-        l=list(self.parse_page(html))
+        l=list(self.parse_page(browser,html))
         self.save_list(l)
 
         for page in range(1,total_page):
@@ -171,8 +209,5 @@ class crawler_51_job(object):
                 # btn_ok=browser.find_element_by_class_name('og_but')
                 # btn_ok.click()
                 html = browser.page_source  
-                l=list(self.parse_page(html))
+                l=list(self.parse_page(browser,html))
                 self.save_list(l)
-
-
-
