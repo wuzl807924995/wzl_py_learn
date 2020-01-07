@@ -36,14 +36,16 @@ class crawler_51_job(object):
 
 
     def save_list(self,l):
-        db = db_utils().get_db()
+        # db = db_utils().get_db()
         for x in l:
-            db[MONGO_COLLECTION].insert(x)
+            print(x)
+            # db[MONGO_COLLECTION].insert(x)
 
 
     def parse_page(self,browser,html):
         doc = pq(html)
         rs_list = doc('#resultList div.el').items()
+        mainWindow = browser.current_window_handle 
         for i in rs_list:
             el_cls=i.attr('class')
             if el_cls=='el':
@@ -70,8 +72,9 @@ class crawler_51_job(object):
                 if idx_start!=-1 and idx_end !=-1:
                         rs['company_id']=company_href[idx_start+1:idx_end]
 
-                # rs['job_detail']=self.run_job_page(browser,rs['job_href'])
+                rs['job_detail']=self.run_job_page(browser,rs['job_href'],mainWindow)
 
+                browser.switch_to.window(mainWindow)
                 yield rs
 
     def open_browser(self):
@@ -80,10 +83,10 @@ class crawler_51_job(object):
         """
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option("debuggerAddress","127.0.0.1:9222")
-        # browser=webdriver.Chrome(chrome_options=chrome_options)
+        browser=webdriver.Chrome(chrome_options=chrome_options)
         # browser=webdriver.Chrome(executable_path="F:\home\selenium\chromedriver.exe",chrome_options=chrome_options)
 
-        browser=webdriver.Chrome(executable_path="F:\home\chromedriver.exe",chrome_options=chrome_options)
+        # browser=webdriver.Chrome(executable_path="F:\home\chromedriver.exe",chrome_options=chrome_options)
         # browser=webdriver.PhantomJS(executable_path="")
         return browser
 
@@ -136,11 +139,10 @@ class crawler_51_job(object):
             address_save.click()
 
 
-    def run_job_page(self,browser,link):
+    def run_job_page(self,browser,link,mainWindow):
         """
             新窗口打开页面并爬数据
         """    
-        mainWindow = browser.current_window_handle 
         handles = browser.window_handles
         for h in handles:
             if h != mainWindow:
@@ -148,6 +150,7 @@ class crawler_51_job(object):
 
 
         toHandle  = browser.current_window_handle
+        browser.get(link)
         self.sl()
 
         html = browser.page_source
@@ -193,7 +196,7 @@ class crawler_51_job(object):
         html = browser.page_source
         doc = pq(html)
         # 总页码
-        total_page = doc('#hidTotalPage').attr('value')
+        total_page = doc('#printTableContent').attr('value')
         # test
         total_page=int(total_page)
         l=list(self.parse_page(browser,html))
