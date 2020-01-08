@@ -18,6 +18,8 @@ from crawler import crawler_51_job
 # s=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) 
 # print(s)
 
-c=crawler_51_job();
+c=crawler_51_job()
+b=c.open_browser()
+mainWindow = b.current_window_handle 
 
-print(c.run_job_page(c.open_browser(),'https://jobs.51job.com/hangzhou/53313192.html'))
+print(c.run_job_page(b,'https://jobs.51job.com/hangzhou/53313192.html',mainWindow))

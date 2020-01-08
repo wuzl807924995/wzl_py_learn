@@ -1,8 +1,0 @@
-MONGO_URL = '192.168.5.173'
-MONGO_PORT = 27017
-MONGO_DB = 'db_0102'
-
-BASE_URL='https://search.51job.com/'
-SEARCH_KEY='java'
-
-MONGO_COLLECTION = 't_'+SEARCH_KEY
