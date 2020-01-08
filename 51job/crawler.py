@@ -22,6 +22,8 @@ import sys
 
 class crawler_51_job(object):
 
+    executable_path='F:\home\chromedriver.exe'
+
     BASE_URL='https://search.51job.com/'
     SEARCH_KEY='java'
 
@@ -101,12 +103,15 @@ class crawler_51_job(object):
         print('开始打开浏览器')    
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option("debuggerAddress","127.0.0.1:9222")
-        chrome_options.add_argument('--headless')
+        # chrome_options.add_argument('--headless')
         # browser=webdriver.Chrome(chrome_options=chrome_options)
         # browser=webdriver.Chrome(executable_path="F:\home\selenium\chromedriver.exe",chrome_options=chrome_options)
 
-        browser=webdriver.Chrome(executable_path="F:\home\chromedriver.exe",chrome_options=chrome_options)
+        # browser=webdriver.Chrome(executable_path="F:\home\chromedriver.exe",chrome_options=chrome_options)
         # browser=webdriver.PhantomJS(executable_path=r'C:\Users\John\Downloads\phantomjs-2.1.1-windows\bin\phantomjs.exe')
+
+
+        browser=webdriver.Chrome(executable_path=self.executable_path,chrome_options=chrome_options)
         return browser
 
     def search_val(self,browser):
